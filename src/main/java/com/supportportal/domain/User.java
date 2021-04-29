@@ -15,15 +15,15 @@ public class User implements Serializable {
     private String userId;
     private String firstName;
     private String lastName;
-    private String userName;
+    private String username;
     private String password;
     private String email;
     private String profileImageUrl;
     private Date lastLoginDate;
     private Date getLastLoginDateDisplay;
     private Date joinDate;
-    private String [] roles;  //ROLE_USER, ROLE_ADMIN
-    private String [] authorities;
+    private String[] roles;  //ROLE_USER, ROLE_ADMIN
+    private String[] authorities;
     private boolean isActive;
     private boolean isNotLocked;
 
@@ -32,7 +32,7 @@ public class User implements Serializable {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.userName = userName;
+        this.username = userName;
         this.password = password;
         this.email = email;
         this.profileImageUrl = profileImageUrl;
@@ -81,11 +81,11 @@ public class User implements Serializable {
     }
 
     public String getUserName() {
-        return userName;
+        return username;
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.username = userName;
     }
 
     public String getPassword() {
