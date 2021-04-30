@@ -1,16 +1,28 @@
 package com.supportportal.resource;
 
-import com.supportportal.exceptions.domain.ExceptionHandling;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.supportportal.domain.User;
+import com.supportportal.exceptions.ExceptionHandling;
+import com.supportportal.exceptions.domain.UsernameExistsException;
+import com.supportportal.exceptions.domain.UsernameNotFountException;
+import com.supportportal.service.UserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping(path = {"/","/user"})
 public class UserResource extends ExceptionHandling {
 
-    @GetMapping("/home")
-    public String showUser(){
-        return "Application working!";
+    private UserService userService;
+
+    public UserResource(UserService userService) {
+        this.userService = userService;
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<User> register(@RequestBody User user) throws UsernameNotFountException, UsernameExistsException {
+        User newUser = userService.register(user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail());
+        return new ResponseEntity<>(newUser, OK);
     }
 }

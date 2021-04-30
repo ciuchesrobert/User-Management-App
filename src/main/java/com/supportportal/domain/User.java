@@ -1,5 +1,7 @@
 package com.supportportal.domain;
 
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -22,24 +24,24 @@ public class User implements Serializable {
     private Date lastLoginDate;
     private Date getLastLoginDateDisplay;
     private Date joinDate;
-    private String[] roles;  //ROLE_USER, ROLE_ADMIN
+    private String role;  //ROLE_USER, ROLE_ADMIN
     private String[] authorities;
     private boolean isActive;
     private boolean isNotLocked;
 
-    public User(Long id, String userId, String firstName, String lastName, String userName, String password, String email, String profileImageUrl, Date lastLoginDate, Date getLastLoginDateDisplay, Date joinDate, String[] roles, String[] authorities, boolean isActive, boolean isNotLocked) {
+    public User(Long id, String userId, String firstName, String lastName, String username, String password, String email, String profileImageUrl, Date lastLoginDate, Date getLastLoginDateDisplay, Date joinDate, String role, String[] authorities, boolean isActive, boolean isNotLocked) {
         this.id = id;
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.username = userName;
+        this.username = username;
         this.password = password;
         this.email = email;
         this.profileImageUrl = profileImageUrl;
         this.lastLoginDate = lastLoginDate;
         this.getLastLoginDateDisplay = getLastLoginDateDisplay;
         this.joinDate = joinDate;
-        this.roles = roles;
+        this.role = role;
         this.authorities = authorities;
         this.isActive = isActive;
         this.isNotLocked = isNotLocked;
@@ -80,11 +82,11 @@ public class User implements Serializable {
         this.lastName = lastName;
     }
 
-    public String getUserName() {
+    public String getUsername() {
         return username;
     }
 
-    public void setUserName(String userName) {
+    public void setUsername(String userName) {
         this.username = userName;
     }
 
@@ -136,12 +138,12 @@ public class User implements Serializable {
         this.joinDate = joinDate;
     }
 
-    public String[] getRoles() {
-        return roles;
+    public String getRole() {
+        return role;
     }
 
-    public void setRoles(String[] roles) {
-        this.roles = roles;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String[] getAuthorities() {
@@ -166,5 +168,9 @@ public class User implements Serializable {
 
     public void setNotLocked(boolean notLocked) {
         isNotLocked = notLocked;
+    }
+
+    public String getTemporaryProfileImageUrl() {
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/image/profile/temp").toUriString();
     }
 }
