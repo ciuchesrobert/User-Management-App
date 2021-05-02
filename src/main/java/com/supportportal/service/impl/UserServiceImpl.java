@@ -43,7 +43,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
 
-    private Logger LOGGER = LoggerFactory.getLogger(getClass());
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
     private UserRepository userRepository;
     private BCryptPasswordEncoder passwordEncoder;
     private LoginAttemptService loginAttemptService;
