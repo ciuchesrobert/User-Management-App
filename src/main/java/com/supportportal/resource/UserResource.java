@@ -5,6 +5,7 @@ import com.supportportal.domain.User;
 import com.supportportal.domain.UserPrincipal;
 import com.supportportal.exceptions.ExceptionHandling;
 import com.supportportal.exceptions.domain.EmailNotFoundException;
+import com.supportportal.exceptions.domain.NotAnImageFileException;
 import com.supportportal.exceptions.domain.UsernameExistsException;
 import com.supportportal.exceptions.domain.UsernameNotFountException;
 import com.supportportal.service.UserService;
@@ -74,7 +75,7 @@ public class UserResource extends ExceptionHandling {
                                            @RequestParam("isActive") String isActive,
                                            @RequestParam("isNonLocked") String isNonLocked,
                                            @RequestParam(value = "profileImage", required = false) MultipartFile profileImage)
-            throws UsernameExistsException, UsernameNotFountException, IOException {
+            throws UsernameExistsException, UsernameNotFountException, IOException, NotAnImageFileException {
         User newUser = userService.addNewUser(firstName, lastName, username, email, role,
                 Boolean.parseBoolean(isActive), Boolean.parseBoolean(isNonLocked), profileImage);
         return new ResponseEntity<>(newUser, OK);
@@ -90,7 +91,7 @@ public class UserResource extends ExceptionHandling {
                                        @RequestParam("isActive") String isActive,
                                        @RequestParam("isNonLocked") String isNonLocked,
                                        @RequestParam(value = "profileImage", required = false) MultipartFile profileImage)
-            throws UsernameExistsException, UsernameNotFountException, IOException {
+            throws UsernameExistsException, UsernameNotFountException, IOException, NotAnImageFileException {
         User updatedUser = userService.updateUser(currentUsername, firstName, lastName, username, email, role,
                 Boolean.parseBoolean(isActive), Boolean.parseBoolean(isNonLocked), profileImage);
         return new ResponseEntity<>(updatedUser, OK);
@@ -108,28 +109,28 @@ public class UserResource extends ExceptionHandling {
         return new ResponseEntity<>(users, OK);
     }
 
-    @GetMapping("/resetPassword/{email}")
+    @GetMapping("/resetpassword/{email}")
     public ResponseEntity<HttpResponse> resetPassword(@PathVariable("email") String email) throws EmailNotFoundException, MessagingException {
         userService.resetPassword(email);
         return response(OK, EMAIL_SENT + email);
     }
 
-    @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('user:delete')")
-    public ResponseEntity<HttpResponse> delete(@PathVariable("id") long id) {
-        userService.deleteUser(id);
-        return response(NO_CONTENT, USER_DELETED_SUCCESSFULLY);
+    @DeleteMapping("/delete/{username}")
+    @PreAuthorize("hasAnyAuthority('user:delete')")
+    public ResponseEntity<HttpResponse> deleteUser(@PathVariable("username") String username) throws IOException {
+        userService.deleteUser(username);
+        return response(OK, USER_DELETED_SUCCESSFULLY);
     }
 
     @PostMapping("/updateProfileImage")
     public ResponseEntity<User> updateProfileImage(@RequestParam("username") String username,
-                                                   @RequestParam(value = "profileImage") MultipartFile profileImage) throws UsernameExistsException, UsernameNotFountException, IOException {
+                                                   @RequestParam(value = "profileImage") MultipartFile profileImage) throws UsernameExistsException, UsernameNotFountException, IOException, NotAnImageFileException {
         User user = userService.updateProfileImage(username, profileImage);
         return new ResponseEntity<>(user, OK);
     }
 
     @GetMapping(path = "/image/{username}/{fileName}", produces = IMAGE_JPEG_VALUE)
-    public byte[] getProfileImage(@PathVariable("username") String username, @PathVariable("filename") String filename) throws IOException {
+    public byte[] getProfileImage(@PathVariable("username") String username, @PathVariable("fileName") String filename) throws IOException {
         return Files.readAllBytes(Paths.get(USER_FOLDER + username + FORWARD_SLASH + filename));
     }
 
